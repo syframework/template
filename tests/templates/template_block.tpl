@@ -1,0 +1,1 @@
+<!-- BEGIN BLOCK -->{VAR}<!-- ELSE BLOCK -->Default block<!-- END BLOCK -->
