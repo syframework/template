@@ -56,6 +56,7 @@ $template->setFile('mytemplate.tpl');
 // fill the variable slot and repeat the block
 foreach (['foo', 'bar', 'baz'] as $name) {
 	$template->setVar('NAME', $name);
+	$template->setBlock('MY_BLOCK');
 }
 
 // output render
