@@ -11,11 +11,14 @@ class Template implements ITemplate {
 
 	private $blockCached;
 
+	private $clearEmptyVars;
+
 	public function __construct() {
 		$this->content = '';
 		$this->vars = array();
 		$this->blockCached = array();
 		$this->blockParsed = array();
+		$this->clearEmptyVars = false;
 	}
 
 	public function setContent($content) {
@@ -67,9 +70,16 @@ class Template implements ITemplate {
 		$res = str_replace($search, $varvals, $this->content);
 		$search = array_map(function($v) {return '{"' . $v . '"}';}, $varkeys);
 		$res = str_replace($search, $varvals, $res);
-		$res = preg_replace('/{[^ \t\r\n\'\({}[":,]+}/', "", $res);
+		if ($this->clearEmptyVars) $res = preg_replace('/{[^ \t\r\n\'\({}[":,]+}/', "", $res);
 		$res = preg_replace('/{\"([^\t\r\n\'\({}[":,]+)\"}/', '$1', $res);
 		return $res;
+	}
+
+	/**
+	 * Enable auto clear empty vars
+	 */
+	public function clearEmptyVars() {
+		$this->clearEmptyVars = true;
 	}
 
 	private function loadBlock($block) {
