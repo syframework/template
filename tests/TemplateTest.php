@@ -31,7 +31,7 @@ class TemplateTest extends TestCase {
 	public function testSetFile() {
 		$this->template->setFile(__DIR__ . '/templates/template.tpl');
 		$this->assertEquals(
-			'hello  world',
+			'hello {NAME} world',
 			$this->template->getRender()
 		);
 	}
