@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Sy\Template\Template;
+use Sy\Template\TemplateFileNotFoundException;
 use Sy\Template\TemplateProvider;
 
 class TemplateTest extends TestCase {
@@ -30,9 +31,14 @@ class TemplateTest extends TestCase {
 	public function testSetFile() {
 		$this->template->setFile(__DIR__ . '/templates/template.tpl');
 		$this->assertEquals(
-			'hello  world',
+			'hello {NAME} world',
 			$this->template->getRender()
 		);
+	}
+
+	public function testTemplateFileNotFound() {
+		$this->expectException(TemplateFileNotFoundException::class);
+		$this->template->setFile('nothing.tpl');
 	}
 
 	public function testSetVar() {

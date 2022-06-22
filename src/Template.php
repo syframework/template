@@ -55,7 +55,7 @@ class Template implements ITemplate {
 		$search = array_map(function($v) {return '{"' . $v . '"}';}, $varkeys);
 		$res = str_replace($search, $varvals, $res);
 
-		$this->blockParsed[$block] .= $res;
+		$this->blockParsed[$block] = (isset($this->blockParsed[$block]) ? $this->blockParsed[$block] : '') . $res;
 	}
 
 	public function getRender() {
@@ -93,7 +93,7 @@ class Template implements ITemplate {
 		$blockContent = rtrim($t[0], " \t");
 
 		$this->blockCached[$block] = $blockContent;
-		$this->blockParsed[$block] = '';
+		unset($this->blockParsed[$block]);
 		return true;
 	}
 
@@ -101,7 +101,7 @@ class Template implements ITemplate {
 		$block = $match[1];
 		if (isset($this->blockParsed[$block])) {
 			$out = $this->blockParsed[$block];
-			$this->blockParsed[$block] = '';
+			unset($this->blockParsed[$block]);
 		} else {
 			$t = explode('<!-- ELSE ' . $block . ' -->', $match[2]);
 			$out = isset($t[1]) ? ltrim(rtrim($t[1], " \t"), "\r\n") : '';

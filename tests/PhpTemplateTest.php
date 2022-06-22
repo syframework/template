@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Sy\Template\PhpTemplate;
+use Sy\Template\TemplateFileNotFoundException;
 use Sy\Template\TemplateProvider;
 
 class PhpTemplateTest extends TestCase {
@@ -33,6 +34,11 @@ class PhpTemplateTest extends TestCase {
 			'hello world',
 			$this->template->getRender()
 		);
+	}
+
+	public function testTemplateFileNotFound() {
+		$this->expectException(TemplateFileNotFoundException::class);
+		$this->template->setFile('nothing.tpl');
 	}
 
 	public function testSetVar() {
