@@ -71,4 +71,83 @@ class TemplateTest extends TestCase {
 		);
 	}
 
+	public function testSlot() {
+		$this->template->setFile(__DIR__ . '/templates/slot.tpl');
+		$this->template->setVar('SLOT', 'hello');
+		$this->assertEquals(
+			'hello hello hello hello SLOT/foo {"SLOT} {SLOT"} {SLOT_A} {SLOT/{foo}}',
+			$this->template->getRender()
+		);
+	}
+
+	public function testDefaultSlot() {
+		$this->template->setFile(__DIR__ . '/templates/slot.tpl');
+		$this->assertEquals(
+			'{SLOT}  SLOT foo SLOT/foo {"SLOT} {SLOT"} {SLOT_A} {SLOT/{foo}}',
+			$this->template->getRender()
+		);
+	}
+
+	public function testSlotNotCleared() {
+		$this->template->setContent('{SLOT}');
+		$this->assertEquals(
+			'{SLOT}',
+			$this->template->getRender()
+		);
+		$this->template->setContent('{SLOT_NAME}');
+		$this->assertEquals(
+			'{SLOT_NAME}',
+			$this->template->getRender()
+		);
+		$this->template->setContent('{SLOT NAME}');
+		$this->assertEquals(
+			'{SLOT NAME}',
+			$this->template->getRender()
+		);
+	}
+
+	public function testSlotCleared() {
+		$this->template->setContent('{SLOT/}');
+		$this->assertEquals(
+			'',
+			$this->template->getRender()
+		);
+		$this->template->setContent('{SLOT_NAME/}');
+		$this->assertEquals(
+			'',
+			$this->template->getRender()
+		);
+		$this->template->setContent('{SLOT NAME/}');
+		$this->assertEquals(
+			'',
+			$this->template->getRender()
+		);
+	}
+
+	public function testSlotDefaultValue() {
+		$this->template->setContent('{SLOT/foo}');
+		$this->assertEquals(
+			'foo',
+			$this->template->getRender()
+		);
+		$this->template->setContent('{SLOT/foo bar baz}');
+		$this->assertEquals(
+			'foo bar baz',
+			$this->template->getRender()
+		);
+	}
+
+	public function testQuotedSlot() {
+		$this->template->setContent('{"hello world"}');
+		$this->assertEquals(
+			'hello world',
+			$this->template->getRender()
+		);
+		$this->template->setContent("{'foo bar baz'}");
+		$this->assertEquals(
+			'foo bar baz',
+			$this->template->getRender()
+		);
+	}
+
 }
