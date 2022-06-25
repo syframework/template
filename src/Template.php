@@ -11,14 +11,11 @@ class Template implements ITemplate {
 
 	private $blockCached;
 
-	private $clearEmptyVars;
-
 	public function __construct() {
 		$this->content = '';
 		$this->vars = array();
 		$this->blockCached = array();
 		$this->blockParsed = array();
-		$this->clearEmptyVars = false;
 	}
 
 	public function setContent($content) {
@@ -50,10 +47,9 @@ class Template implements ITemplate {
 
 		$varkeys = array_keys($this->vars);
 		$varvals = array_values($this->vars);
-		$search = array_map(function($v) {return '{' . $v . '}';}, $varkeys);
-		$res = str_replace($search, $varvals, $data);
-		$search = array_map(function($v) {return '{"' . $v . '"}';}, $varkeys);
-		$res = str_replace($search, $varvals, $res);
+		$search = array_map(function($v) {return '/(?:{' . $v . '(?:\/[^{}\r\n]*)*})|(?:{"' . $v . '"})/';}, $varkeys);
+		$res = preg_replace($search, $varvals, $data);
+		$res = preg_replace('/{[^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
 
 		$this->blockParsed[$block] = (isset($this->blockParsed[$block]) ? $this->blockParsed[$block] : '') . $res;
 	}
@@ -66,20 +62,11 @@ class Template implements ITemplate {
 
 		$varkeys = array_keys($this->vars);
 		$varvals = array_values($this->vars);
-		$search = array_map(function($v) {return '{' . $v . '}';}, $varkeys);
-		$res = str_replace($search, $varvals, $this->content);
-		$search = array_map(function($v) {return '{"' . $v . '"}';}, $varkeys);
-		$res = str_replace($search, $varvals, $res);
-		if ($this->clearEmptyVars) $res = preg_replace('/{[^ \t\r\n\'\({}[":,]+}/', "", $res);
+		$search = array_map(function($v) {return '/(?:{' . $v . '(?:\/[^{}\r\n]*)*})|(?:{"' . $v . '"})/';}, $varkeys);
+		$res = preg_replace($search, $varvals, $this->content);
+		$res = preg_replace('/{[^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
 		$res = preg_replace('/{\"([^\t\r\n\'\({}[":,]+)\"}/', '$1', $res);
 		return $res;
-	}
-
-	/**
-	 * Enable auto clear empty vars
-	 */
-	public function clearEmptyVars() {
-		$this->clearEmptyVars = true;
 	}
 
 	private function loadBlock($block) {
