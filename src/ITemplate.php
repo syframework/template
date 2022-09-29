@@ -31,8 +31,10 @@ interface ITemplate {
 	 * Sets a block
 	 *
 	 * @param string $block
+	 * @param array $vars Associative array('SLOT_NAME' => 'Slot value').
+	 *              Isolated vars to use for the block, use the template vars if empty
 	 */
-	public function setBlock($block);
+	public function setBlock($block, $vars = array());
 
 	/**
 	 * Returns a template render

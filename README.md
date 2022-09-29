@@ -53,6 +53,9 @@ use Sy\Template\Template;
 $template = new Template();
 $template->setFile('mytemplate.tpl');
 
+// This variable will be overrided below
+$template->setVar('NAME', 'Hello world');
+
 // Fill the variable slot and repeat the block
 foreach (['foo', 'bar', 'baz'] as $name) {
 	$template->setVar('NAME', $name);
@@ -66,6 +69,7 @@ echo $template->getRender();
 The template file *mytemplate.tpl* content:
 
 ```
+{NAME}
 <!-- BEGIN MY_BLOCK -->
 Hello {NAME}
 <!-- END MY_BLOCK -->
@@ -74,6 +78,49 @@ Hello {NAME}
 The output result:
 
 ```
+baz
+Hello foo
+Hello bar
+Hello baz
+```
+
+### Isolated variables for a block
+
+```php
+<?php
+
+use Sy\Template\Template;
+
+// Create a template with a block
+$template = new Template();
+$template->setFile('mytemplate.tpl');
+
+// This variable will not be overrided below because the block use isolated variables
+$template->setVar('NAME', 'Hello world');
+
+// Fill the variable slot and repeat the block
+foreach (['foo', 'bar', 'baz'] as $name) {
+	// Use isolated variables for this block
+	$template->setBlock('MY_BLOCK', ['NAME' => $name]);
+}
+
+// Output render
+echo $template->getRender();
+```
+
+The template file *mytemplate.tpl* content:
+
+```
+{NAME}
+<!-- BEGIN MY_BLOCK -->
+Hello {NAME}
+<!-- END MY_BLOCK -->
+```
+
+The output result:
+
+```
+Hello world
 Hello foo
 Hello bar
 Hello baz
