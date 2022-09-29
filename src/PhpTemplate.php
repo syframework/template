@@ -33,8 +33,8 @@ class PhpTemplate implements ITemplate {
 			$this->vars[$var] = $value;
 	}
 
-	public function setBlock($block) {
-		$this->blocks[$block][] = $this->vars;
+	public function setBlock($block, $vars = array()) {
+		$this->blocks[$block][] = empty($vars) ? $this->vars : $vars;
 	}
 
 	public function _($var) {

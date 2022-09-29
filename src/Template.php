@@ -36,7 +36,7 @@ class Template implements ITemplate {
 		}
 	}
 
-	public function setBlock($block) {
+	public function setBlock($block, $vars = array()) {
 		if (!$this->loadBlock($block)) return;
 
 		$data = $this->blockCached[$block];
@@ -45,8 +45,9 @@ class Template implements ITemplate {
 			$data = preg_replace_callback($reg, array($this, 'getBlockContent'), $data);
 		}
 
-		$varkeys = array_keys($this->vars);
-		$varvals = array_values($this->vars);
+		$vars = empty($vars) ? $this->vars : $vars;
+		$varkeys = array_keys($vars);
+		$varvals = array_values($vars);
 		$search = array_map(function($v) {return '/(?:{' . $v . '(?:\/[^{}\r\n]*)*})|(?:{"' . $v . '"})/';}, $varkeys);
 		$res = preg_replace($search, $varvals, $data);
 		$res = preg_replace('/{[^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
