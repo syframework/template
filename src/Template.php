@@ -28,12 +28,7 @@ class Template implements ITemplate {
 	}
 
 	public function setVar($var, $value, $append = false) {
-		if ($append and isset($this->vars[$var])) {
-			$this->vars[$var] .= $value;
-		}
-		else {
-			$this->vars[$var] = $value;
-		}
+		$this->vars[$var] = ($append and isset($this->vars[$var])) ? $this->vars[$var] . $value : $value;
 	}
 
 	public function setBlock($block, $vars = array()) {

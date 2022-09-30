@@ -50,6 +50,17 @@ class TemplateTest extends TestCase {
 		);
 	}
 
+	public function testSetVarAppend() {
+		$this->template->setFile(__DIR__ . '/templates/template.tpl');
+		$this->template->setVar('NAME', 'foo');
+		$this->template->setVar('NAME', 'bar', true);
+		$this->template->setVar('NAME', 'baz', true);
+		$this->assertEquals(
+			'hello foobarbaz world',
+			$this->template->getRender()
+		);
+	}
+
 	public function testSetBlock() {
 		$data = ['foo', 'bar', 'baz'];
 		$this->template->setFile(__DIR__ . '/templates/template_block.tpl');
