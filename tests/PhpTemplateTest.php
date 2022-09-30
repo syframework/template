@@ -53,12 +53,26 @@ class PhpTemplateTest extends TestCase {
 	public function testSetBlock() {
 		$data = ['foo', 'bar', 'baz'];
 		$this->template->setFile(__DIR__ . '/templates/php_template_block.tpl');
+		$this->template->setVar('VAR', 'Hello world');
 		foreach ($data as $var) {
 			$this->template->setVar('VAR', $var);
 			$this->template->setBlock('BLOCK');
 		}
 		$this->assertEquals(
-			'foobarbaz',
+			'bazfoobarbaz',
+			$this->template->getRender()
+		);
+	}
+
+	public function testSetBlockWithVars() {
+		$data = ['foo', 'bar', 'baz'];
+		$this->template->setFile(__DIR__ . '/templates/php_template_block.tpl');
+		$this->template->setVar('VAR', 'Hello world');
+		foreach ($data as $var) {
+			$this->template->setBlock('BLOCK', ['VAR' => $var]);
+		}
+		$this->assertEquals(
+			'Hello worldfoobarbaz',
 			$this->template->getRender()
 		);
 	}
