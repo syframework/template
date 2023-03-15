@@ -42,7 +42,7 @@ class Template implements ITemplate {
 
 		$vars = empty($vars) ? $this->vars : $vars;
 		$varkeys = array_keys($vars);
-		$varvals =  array_map('preg_quote', array_values($vars));
+		$varvals =  array_map(function($v) {return str_replace('$', '\$', $v);}, array_values($vars));
 		$search = array_map(function($v) {return '/(?:{' . $v . '(?:\/[^{}\r\n]*)*})|(?:{"' . $v . '"})/';}, $varkeys);
 		$res = preg_replace($search, $varvals, $data);
 		$res = preg_replace('/{[^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
@@ -57,7 +57,7 @@ class Template implements ITemplate {
 		}
 
 		$varkeys = array_keys($this->vars);
-		$varvals = array_map('preg_quote', array_values($this->vars));
+		$varvals = array_map(function($v) {return str_replace('$', '\$', $v);}, array_values($this->vars));
 		$search = array_map(function($v) {return '/(?:{' . $v . '(?:\/[^{}\r\n]*)*})|(?:{"' . $v . '"})/';}, $varkeys);
 		$res = preg_replace($search, $varvals, $this->content);
 		$res = preg_replace('/{[^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
