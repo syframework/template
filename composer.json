@@ -19,5 +19,8 @@
 		"psr-4": {
 			"Sy\\Template\\": "src/"
 		}
+	},
+	"scripts": {
+		"test": "phpunit --coverage-text --whitelist src tests"
 	}
 }
