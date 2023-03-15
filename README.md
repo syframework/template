@@ -7,7 +7,7 @@ A simple template engine for PHP
 Install the latest version with
 
 ```bash
-$ composer require sy/template
+composer require sy/template
 ```
 
 ## Basic Usage

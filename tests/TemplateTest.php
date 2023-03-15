@@ -85,14 +85,14 @@ class TemplateTest extends TestCase {
 	}
 
 	public function testSetBlockWithVars() {
-		$data = ['foo', 'bar', 'baz'];
+		$data = ['<foo>', '<bar>', '<baz>'];
 		$this->template->setFile(__DIR__ . '/templates/template_block.tpl');
 		$this->template->setVar('VAR', 'hello');
 		foreach ($data as $var) {
 			$this->template->setBlock('BLOCK', ['VAR' => $var]);
 		}
 		$this->assertEquals(
-			'hellofoobarbaz',
+			'hello<foo><bar><baz>',
 			$this->template->getRender()
 		);
 	}
