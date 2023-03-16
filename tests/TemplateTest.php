@@ -52,9 +52,9 @@ class TemplateTest extends TestCase {
 
 	public function testSetVarWithSpecialChar() {
 		$this->template->setFile(__DIR__ . '/templates/template.tpl');
-		$this->template->setVar('NAME', '$1');
+		$this->template->setVar('NAME', '\0 $1 \2');
 		$this->assertEquals(
-			'hello $1 world',
+			'hello \0 $1 \2 world',
 			$this->template->getRender()
 		);
 	}
@@ -98,14 +98,14 @@ class TemplateTest extends TestCase {
 	}
 
 	public function testSetBlockWithSpecialVars() {
-		$data = ['$1', '$2', '$3', '$foo', '$bar', '$baz'];
+		$data = ['$1', '$2', '$3', '$foo', '$bar', '$baz', '\1', '\2', '\3', '\foo', '\bar', '\baz'];
 		$this->template->setFile(__DIR__ . '/templates/template_block.tpl');
 		$this->template->setVar('VAR', 'hello');
 		foreach ($data as $var) {
 			$this->template->setBlock('BLOCK', ['VAR' => $var]);
 		}
 		$this->assertEquals(
-			'hello$1$2$3$foo$bar$baz',
+			'hello$1$2$3$foo$bar$baz\1\2\3\foo\bar\baz',
 			$this->template->getRender()
 		);
 	}
