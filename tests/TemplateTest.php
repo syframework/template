@@ -197,4 +197,13 @@ class TemplateTest extends TestCase {
 		);
 	}
 
+	public function testSetVarNull() {
+		$this->template->setContent('hello{SLOT}');
+		$this->template->setVar('SLOT', null);
+		$this->assertEquals(
+			'hello',
+			$this->template->getRender()
+		);
+	}
+
 }
