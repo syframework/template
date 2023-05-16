@@ -190,6 +190,12 @@ class TemplateTest extends TestCase {
 			'hello world',
 			$this->template->getRender()
 		);
+		$this->template->setContent('{"hello world"}');
+		$this->template->setVar('hello world', 'bonjour monde');
+		$this->assertEquals(
+			'bonjour monde',
+			$this->template->getRender()
+		);
 		$this->template->setContent("{'foo bar baz'}");
 		$this->assertEquals(
 			'foo bar baz',
@@ -202,6 +208,15 @@ class TemplateTest extends TestCase {
 		$this->template->setVar('SLOT', null);
 		$this->assertEquals(
 			'hello',
+			$this->template->getRender()
+		);
+	}
+
+	public function testSlotWithQuestionMark() {
+		$this->template->setContent('{"hello?"}');
+		$this->template->setVar('hello?', 'salut ?');
+		$this->assertEquals(
+			'salut ?',
 			$this->template->getRender()
 		);
 	}
