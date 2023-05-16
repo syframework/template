@@ -58,7 +58,7 @@ class Template implements ITemplate {
 
 		$varkeys = array_keys($this->vars);
 		$varvals = array_map(function($v) {return (is_null($v) ? $v : str_replace(array('\\', '$'), array('\\\\', '\$'), $v));}, array_values($this->vars));
-		$search = array_map(function($v) {return '/(?:{' . $v . '(?:\/[^{}\r\n]*)*})|(?:{"' . $v . '"})/';}, $varkeys);
+		$search = array_map(function($v) {return '/(?:{' . preg_quote($v) . '(?:\/[^{}\r\n]*)*})|(?:{"' . preg_quote($v) . '"})/';}, $varkeys);
 		$res = preg_replace($search, $varvals, $this->content);
 		$res = preg_replace('/{[^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
 		$res = preg_replace('/{\"([^\t\r\n\'\({}[":,]+)\"}/', '$1', $res);
