@@ -214,9 +214,55 @@ class TemplateTest extends TestCase {
 
 	public function testSlotWithQuestionMark() {
 		$this->template->setContent('{"hello?"}');
+		$this->assertEquals(
+			'hello?',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{"hello?"}');
 		$this->template->setVar('hello?', 'salut ?');
 		$this->assertEquals(
 			'salut ?',
+			$this->template->getRender()
+		);
+
+		$template = new Template();
+		$template->setContent('<!-- BEGIN BLOCK -->{"hello?"}<!-- END BLOCK -->');
+		$template->setBlock('BLOCK');
+		$this->assertEquals(
+			'hello?',
+			$template->getRender()
+		);
+	}
+
+	public function testSlotWithMark() {
+		$this->template->setContent('{"hello!"}');
+		$this->assertEquals(
+			'hello!',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{"hello."}');
+		$this->assertEquals(
+			'hello.',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{"hello;"}');
+		$this->assertEquals(
+			'hello;',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{"hello:"}');
+		$this->assertEquals(
+			'hello:',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{"je t\'aime"}');
+		$this->assertEquals(
+			'je t\'aime',
 			$this->template->getRender()
 		);
 	}
