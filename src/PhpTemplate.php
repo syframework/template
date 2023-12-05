@@ -3,6 +3,8 @@ namespace Sy\Template;
 
 class PhpTemplate implements ITemplate {
 
+	private $content;
+
 	private $file;
 
 	private $vars;
@@ -10,27 +12,29 @@ class PhpTemplate implements ITemplate {
 	private $blocks;
 
 	public function __construct() {
+		$this->content = '';
 		$this->file = '';
 		$this->vars = array();
 		$this->blocks = array();
 	}
 
 	public function setContent($content) {
-		$file = tempnam(sys_get_temp_dir(), 'sytpl');
-		file_put_contents($file, $content);
-		$this->setFile($file);
+		$this->content = $content;
+		$this->file = '';
 	}
 
 	public function setFile($file) {
 		if (!file_exists($file)) throw new TemplateFileNotFoundException("Template file note found: $file");
 		$this->file = $file;
+		$this->content = '';
 	}
 
 	public function setVar($var, $value, $append = false) {
-		if ($append and isset($this->vars[$var]))
+		if ($append and isset($this->vars[$var])) {
 			$this->vars[$var] .= $value;
-		else
+		} else {
 			$this->vars[$var] = $value;
+		}
 	}
 
 	public function setBlock($block, $vars = array()) {
@@ -42,6 +46,11 @@ class PhpTemplate implements ITemplate {
 	}
 
 	public function getRender() {
+		if (!empty($this->content)) {
+			$file = tempnam(sys_get_temp_dir(), 'sytpl');
+			file_put_contents($file, $this->content);
+			$this->file = $file;
+		}
 		if (empty($this->file)) return '';
 
 		extract($this->blocks);
@@ -54,6 +63,11 @@ class PhpTemplate implements ITemplate {
 		include $this->file;
 		$content = ob_get_contents();
 		ob_end_clean();
+
+		if (!empty($this->content)) {
+			unlink($this->file);
+		}
+
 		return $content;
 	}
 
