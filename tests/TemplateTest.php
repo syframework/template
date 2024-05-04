@@ -118,6 +118,24 @@ class TemplateTest extends TestCase {
 		);
 	}
 
+	public function testNestedBlock() {
+		$this->template->setFile(__DIR__ . '/templates/template_nested_block.tpl');
+
+		foreach (['One', 'Two', 'Three'] as $block) {
+			foreach (['A', 'B', 'C'] as $var) {
+				$this->template->setVar('VAR_TWO', $var);
+				$this->template->setBlock('BLOCK_TWO');
+			}
+			$this->template->setVar('VAR_ONE', $block);
+			$this->template->setBlock('BLOCK_ONE');
+		}
+
+		$this->assertEquals(
+			'*One:-A-B-C*Two:-A-B-C*Three:-A-B-C',
+			$this->template->getRender()
+		);
+	}
+
 	public function testSlot() {
 		$this->template->setFile(__DIR__ . '/templates/slot.tpl');
 		$this->template->setVar('SLOT', 'hello');
