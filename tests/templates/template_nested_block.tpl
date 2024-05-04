@@ -1,0 +1,1 @@
+<!-- BEGIN BLOCK_ONE -->*{VAR_ONE}:<!-- BEGIN BLOCK_TWO -->-{VAR_TWO}<!-- END BLOCK_TWO --><!-- END BLOCK_ONE -->

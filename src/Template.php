@@ -3,12 +3,24 @@ namespace Sy\Template;
 
 class Template implements ITemplate {
 
+	/**
+	 * @var string
+	 */
 	private $content;
 
+	/**
+	 * @var array
+	 */
 	private $vars;
 
+	/**
+	 * @var array
+	 */
 	private $blockParsed;
 
+	/**
+	 * @var array
+	 */
 	private $blockCached;
 
 	public function __construct() {
@@ -18,19 +30,44 @@ class Template implements ITemplate {
 		$this->blockParsed = array();
 	}
 
+	/**
+	 * Sets a template content
+	 *
+	 * @param string $content
+	 */
 	public function setContent($content) {
 		$this->content = preg_replace('/{\'([^\t\r\n\'\({}[":,]+)\'}/', '{"$1"}', $content);
 	}
 
+	/**
+	 * Sets a template file
+	 *
+	 * @param string $file
+	 * @throws TemplateFileNotFoundException
+	 */
 	public function setFile($file) {
-		if (!file_exists($file)) throw new TemplateFileNotFoundException("Template file note found: $file");
+		if (!file_exists($file)) throw new TemplateFileNotFoundException("Template file not found: $file");
 		$this->setContent(file_get_contents($file));
 	}
 
+	/**
+	 * Sets a value for a slot
+	 *
+	 * @param string $var
+	 * @param string $value
+	 * @param bool $append
+	 */
 	public function setVar($var, $value, $append = false) {
 		$this->vars[$var] = ($append and isset($this->vars[$var])) ? $this->vars[$var] . $value : $value;
 	}
 
+	/**
+	 * Sets a block
+	 *
+	 * @param string $block
+	 * @param array $vars Associative array('SLOT_NAME' => 'Slot value').
+	 *              Isolated vars to use for the block, use the template vars if empty
+	 */
 	public function setBlock($block, $vars = array()) {
 		if (!$this->loadBlock($block)) return;
 
@@ -50,6 +87,11 @@ class Template implements ITemplate {
 		$this->blockParsed[$block] = (isset($this->blockParsed[$block]) ? $this->blockParsed[$block] : '') . $res;
 	}
 
+	/**
+	 * Returns a template render
+	 *
+	 * @return string
+	 */
 	public function getRender() {
 		if (strpos($this->content, '<!-- BEGIN') !== false) {
 			$reg = "/[ \t]*<!-- BEGIN ([a-zA-Z0-9\._]*) -->(\s*?\n?\s*.*?\n?\s*)<!-- END \\1 -->\s*?\n?/sm";
@@ -65,6 +107,12 @@ class Template implements ITemplate {
 		return $res;
 	}
 
+	/**
+	 * Render a block
+	 *
+	 * @param string $block
+	 * @return bool
+	 */
 	private function loadBlock($block) {
 		if (isset($this->blockCached[$block])) return true;
 		$reg = "/[ \t]*<!-- BEGIN $block -->\s*?\n?(\s*.*?\n?)\s*<!-- END $block -->\s*?\n?/sm";
@@ -80,6 +128,10 @@ class Template implements ITemplate {
 		return true;
 	}
 
+	/**
+	 * @param array $match
+	 * @return string
+	 */
 	private function getBlockContent($match) {
 		$block = $match[1];
 		if (isset($this->blockParsed[$block])) {
