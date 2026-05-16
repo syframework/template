@@ -82,7 +82,7 @@ class Template implements ITemplate {
 		$varvals =  array_map(function($v) {return (is_null($v) ? $v : str_replace(array('\\', '$'), array('\\\\', '\$'), $v));}, array_values($vars));
 		$search = array_map(function($v) {return '/(?:{' . preg_quote($v) . '(?:\/[^{}\r\n]*)*})|(?:{"' . preg_quote($v) . '"})/';}, $varkeys);
 		$res = preg_replace($search, $varvals, $data);
-		$res = preg_replace('/{[^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
+		$res = preg_replace('/{[^\s"][^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
 
 		$this->blockParsed[$block] = (isset($this->blockParsed[$block]) ? $this->blockParsed[$block] : '') . $res;
 	}
@@ -102,7 +102,7 @@ class Template implements ITemplate {
 		$varvals = array_map(function($v) {return (is_null($v) ? $v : str_replace(array('\\', '$'), array('\\\\', '\$'), $v));}, array_values($this->vars));
 		$search = array_map(function($v) {return '/(?:{' . preg_quote($v) . '(?:\/[^{}\r\n]*)*})|(?:{"' . preg_quote($v) . '"})/';}, $varkeys);
 		$res = preg_replace($search, $varvals, $this->content);
-		$res = preg_replace('/{[^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
+		$res = preg_replace('/{[^\s"][^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
 		$res = preg_replace('/{\"([^\t\r\n{}"]+)\"}/', '$1', $res);
 		return $res;
 	}

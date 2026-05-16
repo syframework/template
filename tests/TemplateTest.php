@@ -285,4 +285,30 @@ class TemplateTest extends TestCase {
 		);
 	}
 
+	public function testInvalidSlotFormat() {
+		$this->template->setContent('{/foo}');
+		$this->assertEquals(
+			'{/foo}',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{ /foo}');
+		$this->assertEquals(
+			'{ /foo}',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{	/foo}');
+		$this->assertEquals(
+			'{	/foo}',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{' . PHP_EOL . '// foo}');
+		$this->assertEquals(
+			'{' . PHP_EOL . '// foo}',
+			$this->template->getRender()
+		);
+	}
+
 }
