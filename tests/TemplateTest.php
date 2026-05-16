@@ -309,6 +309,18 @@ class TemplateTest extends TestCase {
 			'{' . PHP_EOL . '// foo}',
 			$this->template->getRender()
 		);
+
+		$text = '{
+			"status": "ok",
+			"html": "<div class=\"container\">\n\tHello world\n<\/div>",
+			"scss": "",
+			"js": "if (true) {\r\n\t\/\/ foo\r\n}"
+		}';
+		$this->template->setContent($text);
+		$this->assertEquals(
+			$text,
+			$this->template->getRender()
+		);
 	}
 
 }
