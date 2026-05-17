@@ -73,7 +73,7 @@ class Template implements ITemplate {
 
 		$data = $this->blockCached[$block];
 		if (strpos($data, '<!-- BEGIN') !== false) {
-			$reg = "/[ \t]*<!-- BEGIN ([a-zA-Z0-9\._]*) -->(\s*?\n?\s*.*?\n?\s*)<!-- END \\1 -->\s*?\n?/sm";
+			$reg = "/[ \t]*<!-- BEGIN ([A-Z][A-Z0-9_]*|_[A-Z][A-Z0-9_]*) -->(\s*?\n?\s*.*?\n?\s*)<!-- END \\1 -->\s*?\n?/sm";
 			$data = preg_replace_callback($reg, array($this, 'getBlockContent'), $data);
 		}
 
@@ -82,7 +82,7 @@ class Template implements ITemplate {
 		$varvals =  array_map(function($v) {return (is_null($v) ? $v : str_replace(array('\\', '$'), array('\\\\', '\$'), $v));}, array_values($vars));
 		$search = array_map(function($v) {return '/(?:{' . preg_quote($v) . '(?:\/[^{}\r\n]*)*})|(?:{"' . preg_quote($v) . '"})/';}, $varkeys);
 		$res = preg_replace($search, $varvals, $data);
-		$res = preg_replace('/{[^\s"\\\\][^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
+		$res = preg_replace('/{(?:[A-Z][A-Z0-9_]*|_[A-Z][A-Z0-9_]*)\/([^{}\r\n]*)}/', '$1', $res);
 
 		$this->blockParsed[$block] = (isset($this->blockParsed[$block]) ? $this->blockParsed[$block] : '') . $res;
 	}
@@ -94,7 +94,7 @@ class Template implements ITemplate {
 	 */
 	public function getRender() {
 		if (strpos($this->content, '<!-- BEGIN') !== false) {
-			$reg = "/[ \t]*<!-- BEGIN ([a-zA-Z0-9\._]*) -->(\s*?\n?\s*.*?\n?\s*)<!-- END \\1 -->\s*?\n?/sm";
+			$reg = "/[ \t]*<!-- BEGIN ([A-Z][A-Z0-9_]*|_[A-Z][A-Z0-9_]*) -->(\s*?\n?\s*.*?\n?\s*)<!-- END \\1 -->\s*?\n?/sm";
 			$this->content = preg_replace_callback($reg, array($this, 'getBlockContent'), $this->content);
 		}
 
@@ -102,7 +102,7 @@ class Template implements ITemplate {
 		$varvals = array_map(function($v) {return (is_null($v) ? $v : str_replace(array('\\', '$'), array('\\\\', '\$'), $v));}, array_values($this->vars));
 		$search = array_map(function($v) {return '/(?:{' . preg_quote($v) . '(?:\/[^{}\r\n]*)*})|(?:{"' . preg_quote($v) . '"})/';}, $varkeys);
 		$res = preg_replace($search, $varvals, $this->content);
-		$res = preg_replace('/{[^\s"\\\\][^\t\r\n\'\({}[":,\/]+\/([^{}\r\n]*)}/', '$1', $res);
+		$res = preg_replace('/{(?:[A-Z][A-Z0-9_]*|_[A-Z][A-Z0-9_]*)\/([^{}\r\n]*)}/', '$1', $res);
 		$res = preg_replace('/{\"([^\t\r\n{}"]+)\"}/', '$1', $res);
 		return $res;
 	}
