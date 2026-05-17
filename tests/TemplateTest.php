@@ -169,6 +169,11 @@ class TemplateTest extends TestCase {
 			'{SLOT NAME}',
 			$this->template->getRender()
 		);
+		$this->template->setContent('{SLOT NAME/}');
+		$this->assertEquals(
+			'{SLOT NAME/}',
+			$this->template->getRender()
+		);
 	}
 
 	public function testSlotCleared() {
@@ -178,11 +183,6 @@ class TemplateTest extends TestCase {
 			$this->template->getRender()
 		);
 		$this->template->setContent('{SLOT_NAME/}');
-		$this->assertEquals(
-			'',
-			$this->template->getRender()
-		);
-		$this->template->setContent('{SLOT NAME/}');
 		$this->assertEquals(
 			'',
 			$this->template->getRender()
@@ -198,6 +198,11 @@ class TemplateTest extends TestCase {
 		$this->template->setContent('{SLOT/foo bar baz}');
 		$this->assertEquals(
 			'foo bar baz',
+			$this->template->getRender()
+		);
+		$this->template->setContent('{SLOT_NAME/Hello world}');
+		$this->assertEquals(
+			'Hello world',
 			$this->template->getRender()
 		);
 	}
@@ -319,6 +324,121 @@ class TemplateTest extends TestCase {
 		$this->template->setContent($text);
 		$this->assertEquals(
 			$text,
+			$this->template->getRender()
+		);
+	}
+
+	public function testSlotDefaultValueInvalidFormats() {
+		// Test that invalid slot names with defaults are NOT matched and remain unchanged
+
+		// Only underscores - should NOT match
+		$this->template->setContent('{_/foo}');
+		$this->assertEquals(
+			'{_/foo}',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{__/foo}');
+		$this->assertEquals(
+			'{__/foo}',
+			$this->template->getRender()
+		);
+
+		// Only digits - should NOT match
+		$this->template->setContent('{123/foo}');
+		$this->assertEquals(
+			'{123/foo}',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{1/foo}');
+		$this->assertEquals(
+			'{1/foo}',
+			$this->template->getRender()
+		);
+
+		// Starts with digit - should NOT match
+		$this->template->setContent('{1VAR/foo}');
+		$this->assertEquals(
+			'{1VAR/foo}',
+			$this->template->getRender()
+		);
+
+		// Underscore followed only by digits - should NOT match
+		$this->template->setContent('{_1/foo}');
+		$this->assertEquals(
+			'{_1/foo}',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{_12/foo}');
+		$this->assertEquals(
+			'{_12/foo}',
+			$this->template->getRender()
+		);
+
+		// Dashes not allowed - should NOT match
+		$this->template->setContent('{-/foo}');
+		$this->assertEquals(
+			'{-/foo}',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{A-B/foo}');
+		$this->assertEquals(
+			'{A-B/foo}',
+			$this->template->getRender()
+		);
+
+		$this->template->setContent('{-SLOT/foo}');
+		$this->assertEquals(
+			'{-SLOT/foo}',
+			$this->template->getRender()
+		);
+	}
+
+	public function testSlotDefaultValueValidFormats() {
+		// Test that valid slot names with defaults ARE matched and replaced
+
+		// Single letter
+		$this->template->setContent('{A/foo}');
+		$this->assertEquals(
+			'foo',
+			$this->template->getRender()
+		);
+
+		// Letters with digits
+		$this->template->setContent('{ABC123/bar}');
+		$this->assertEquals(
+			'bar',
+			$this->template->getRender()
+		);
+
+		// Underscore prefix with letter
+		$this->template->setContent('{_A/baz}');
+		$this->assertEquals(
+			'baz',
+			$this->template->getRender()
+		);
+
+		// Underscore prefix with letter and digit
+		$this->template->setContent('{_A1/test}');
+		$this->assertEquals(
+			'test',
+			$this->template->getRender()
+		);
+
+		// Underscore in the middle
+		$this->template->setContent('{SLOT_NAME/value}');
+		$this->assertEquals(
+			'value',
+			$this->template->getRender()
+		);
+
+		// Multiple underscores and letters
+		$this->template->setContent('{SLOT_NAME_123/default}');
+		$this->assertEquals(
+			'default',
 			$this->template->getRender()
 		);
 	}

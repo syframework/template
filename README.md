@@ -128,6 +128,19 @@ Hello baz
 
 ## Advanced Usage
 
+### Naming Conventions
+
+Starting at version 3, slot and block names are more restrictive. They must:
+- Use only uppercase letters (`A-Z`), digits (`0-9`), and underscores (`_`).
+- Contain at least one uppercase letter (they cannot be composed solely of digits or underscores).
+- Start with an uppercase letter or an underscore followed by an uppercase letter.
+
+**Valid names:** `NAME`, `MY_BLOCK`, `BLOCK_1`, `_NAME`.
+
+**Invalid names:** `name`, `123`, `_123`, `MY-BLOCK`.
+
+Note: Slots wrapped in double or single quotes (e.g., `{"Hello"}`) are not subject to these naming restrictions.
+
 ### ELSE block
 
 You can set a default ouput for a block when this one is not set using the ELSE block:

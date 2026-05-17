@@ -96,4 +96,12 @@ class PhpTemplateTest extends TestCase {
 		);
 	}
 
+	public function testDefaultSlotValue() {
+		$this->template->setContent('<?php echo $this->_("hello world"); ?>');
+		$this->assertEquals(
+			'hello world',
+			$this->template->getRender()
+		);
+	}
+
 }
